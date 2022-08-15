@@ -9,8 +9,6 @@ float minControl = 0;
 unsigned long currentPeriod;
 int period = 1; // delay 1 ms
 
-
-
 void setup() {
 
   Serial.begin(9600);
@@ -40,16 +38,9 @@ void loop() {
     error = setPoint - level;
     totalError += error;
 
-    if (totalError >= maxControl) {
-      totalError = maxControl;
-    }
-    else if (totalError <= minControl) {
-      totalError = minControl;
-    }
+    constrain(totalError,minControl,maxControl);
 
     deltaError = error - lastError;
-
-//    controlSignal = (KP * error) + (KI * totalError * period) + ((KD/period) * deltaError);
 
     KP_ = KP*error;
     KI_ = KI*totalError*period;
@@ -57,12 +48,7 @@ void loop() {
 
     controlSignal = KP_ + KI_ + KD_;
 
-    if (controlSignal >= maxControl) {
-      controlSignal = maxControl;
-    }
-    else if (controlSignal <= minControl) {
-      controlSignal = minControl;
-    }
+    constrain(controlSignal,minControl,maxControl);
 
     lastError = error;
 
